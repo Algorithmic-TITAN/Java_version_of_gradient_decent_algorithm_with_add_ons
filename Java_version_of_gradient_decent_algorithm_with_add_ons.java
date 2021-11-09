@@ -7,7 +7,7 @@ import java.util.Arrays; //lets you use arrays easily
 class Java_version_of_gradient_decent_algorithm_with_add_ons {  
   public static void main(String[] args) 
   {
-      
+    System.out.println("Start code here");
   }
 
 }
