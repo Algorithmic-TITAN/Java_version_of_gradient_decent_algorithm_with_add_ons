@@ -58,24 +58,86 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   }
 
 
+  public static double[][][][] run_network(double[] full_population_weights, double[] full_population_biases, double[] INPUTS, int[] layers)
+  {
+    double[] running_network_weights=full_population_weights;
+    double[] running_network_biases=full_population_biases;
+    double[] node_firing_numbers={};
+    double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer={};
+    double[] NODES_PROSCESSED=INPUTS;
+    for (int i=0; i<INPUTS.length; i++)
+    {
+      node_firing_numbers=Arrays.copyOf(node_firing_numbers, node_firing_numbers.length+1);
+      node_firing_numbers[node_firing_numbers.length-1]=INPUTS[i];
+    }
+    int computationoal_part_weights=0;
+    int computationoal_part_biases=0;
+
+    for (int i1=0; i1<layers.length-1;i1++)
+    {
+      double[] nodes_proscessing={};
+      weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length+1);
+      weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length-1]=new double[][] {};
+      for (int i2=0; i2<layers[i1+1]; i2++)
+      {
+        double node_in_next_layer_VALUE=0;
+        weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1]=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1], weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1].length+1);
+        weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1].length-1]=new double[] {};
+        for (int i3=0; i3<layers[i1]; i3++)
+        {
+          double edge_value=running_network_weights[computationoal_part_weights]*NODES_PROSCESSED[i3];
+          weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2]=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2], weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2].length+1);
+          weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2][weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2].length-1]=running_network_weights[computationoal_part_weights];
+          computationoal_part_weights++;
+          node_in_next_layer_VALUE+=edge_value;
+        }
+      nodes_proscessing=Arrays.copyOf(nodes_proscessing, nodes_proscessing.length+1);
+      nodes_proscessing[nodes_proscessing.length-1]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
+      node_firing_numbers=Arrays.copyOf(node_firing_numbers, node_firing_numbers.length+1);
+      node_firing_numbers[node_firing_numbers.length-1]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
+      computationoal_part_biases++;
+      }
+      NODES_PROSCESSED=nodes_proscessing;
+    }
+    double[] outputs=NODES_PROSCESSED;
+
+    double[][][][] all_function_outputs={{{outputs}},{{node_firing_numbers}},weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer};
+    return all_function_outputs;
+  }
+
+
 
   public static void main(String[] args) 
   {
     int[] LAYERS_BEING_USED={1,2,5};
-    double[] INITIALIZING_RANGE={-5,3};
+    double[] INITIALIZING_RANGE={-3,3};
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
+
     double[] full_population_weights=all_outputs_of_init[0];
     double[] full_population_biases=all_outputs_of_init[1];
     double weights_amount=all_outputs_of_init[2][0];
     double biases_amount=all_outputs_of_init[2][1];
     double[] nodes_counted_in_each_layer=all_outputs_of_init[3];
-    System.out.println(Arrays.toString(full_population_weights));
-    System.out.println(Arrays.toString(full_population_biases));
-    System.out.println(weights_amount);
-    System.out.println(biases_amount);
-    System.out.println(Arrays.toString(nodes_counted_in_each_layer));
+
+    double[] inputs={2.25};
+    //activation functions are:
+    /*
+    1=sigmoid;
+    2=binary step;
+    3=tanh;
+    4=softplus;
+    5=gaussian;
+
+    ACTIVATION FUNCTIONS NOT CODED YET
+    ALL ELSE WORKS THOUGH
+    */
+    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, inputs, LAYERS_BEING_USED);
+    double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=run_network_pagacked_outputs[2];
+    double[] outputs=run_network_pagacked_outputs[0][0][0];
+    double[] node_firing_numbers=run_network_pagacked_outputs[1][0][0];
+
   }
 
 }
 
-//Remember to go into github and drag and drop the file from file explorer into the repository to update the git repository.
+//Remember to go into https://github.com/Algorithmic-TITAN/Java_version_of_gradient_decent_algorithm_with_add_ons and drag and drop the file from file explorer into the repository to update the git repository.
