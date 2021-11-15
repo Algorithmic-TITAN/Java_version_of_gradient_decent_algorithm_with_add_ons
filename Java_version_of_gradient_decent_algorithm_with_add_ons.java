@@ -4,6 +4,7 @@ import java.lang.Math; /*imports java's math library*/
 import java.util.Scanner; //imports Scanner library
 import java.util.Random; //imports random library
 import java.util.Arrays; //lets you use arrays easily
+import java.lang.Integer;
 
 
 class Java_version_of_gradient_decent_algorithm_with_add_ons {
@@ -58,7 +59,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   }
 
 
-  public static double[][][][] run_network(double[] full_population_weights, double[] full_population_biases, double[] INPUTS, int[] layers)
+  public static double[][][][] run_network(double[] full_population_weights, double[] full_population_biases, double[] INPUTS, int[] layers, String activation_functions)
   {
     double[] running_network_weights=full_population_weights;
     double[] running_network_biases=full_population_biases;
@@ -101,8 +102,115 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     }
     double[] outputs=NODES_PROSCESSED;
 
+    activation_functions=activation_functions.toLowerCase();
+    if (activation_functions.contains("sigmoid"))
+    {
+      for (int i4=0; i4<layers[layers.length-1]; i4++)
+      {
+        outputs[i4]=1/(1+(Math.pow(2.71828, -1*outputs[i4])));
+      }
+    }
+    if ((activation_functions.contains("binary_step")) || activation_functions.contains("binarystep"))
+    {
+      for (int i5=0; i5<layers[layers.length-1]; i5++)
+      {
+        if (outputs[i5]>0)
+        {
+          outputs[i5]=1;
+        }
+        else
+        {
+          outputs[i5]=0;
+        }
+      }
+    }
+    if (activation_functions.contains("tanh") || activation_functions.contains("hyperbolic_tangent") || activation_functions.contains("hyperbolictangent"))
+    {
+      for (int i6=0; i6<layers[layers.length-1]; i6++)
+      {
+        outputs[i6]=((Math.pow(2.71828, outputs[i6]))-(Math.pow(2.71828, -1*outputs[i6])))/((Math.pow(2.71828, outputs[i6]))+(Math.pow(2.71828, -1*outputs[i6])));
+      }
+    }
+    if (activation_functions.contains("softplus"))
+    { 
+      for (int i7=0; i7<layers[layers.length-1]; i7++)
+      {
+        outputs[i7]=Math.log(1+(Math.pow(2.71828, outputs[i7])));
+      }
+    }
+    if (activation_functions.contains("gaussian") || activation_functions.contains("gaussian_function") || activation_functions.contains("gaussianfunction"))
+    {
+      for (int i8=0; i8<layers[layers.length-1]; i8++)
+      {
+        outputs[i8]=Math.pow(Math.pow(2.71828, 0-outputs[i8]), 2);
+      }
+    }
+
     double[][][][] all_function_outputs={{{outputs}},{{node_firing_numbers}},weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer};
     return all_function_outputs;
+  }
+
+
+
+  public static double[] find_costs(double[] predictions, double[] goals)
+  {
+    double[] costs={};
+    for (int i=0; i<predictions.length; i++)
+    {
+      costs=Arrays.copyOf(costs, costs.length+1);
+      costs[costs.length-1]=Math.pow(predictions[i]-goals[i], 2);
+    }
+
+    return costs;
+  }
+
+
+
+  public static double test(double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases)
+  {
+    double error=0;
+    for (int i=0; i<test_data.length; i++)
+    {
+      for (int i1=0; i1<layers[layers.length-1]; i1++)
+      {
+        error+=Math.pow(run_network(full_population_weights, full_population_biases, test_data[i][0], layers, activation_functions)[0][0][0][i1]-test_data[i][1][i1], 2);
+      }
+    }
+
+    double average_error=error/test_data.length;
+    return average_error;
+  }
+
+  public static double[][][][] train_test_data_split(double[][][] all_data, double[] ratios_of_data)
+  {
+    double[][][] training_data={};
+    double[][][] testing_data={};
+    int[] testing_data_IDs={};
+    String testing_data_ID_STRING=" ";
+    int appended_into_testing_data_id_string=0;
+    while (appended_into_testing_data_id_string+1<all_data.length*ratios_of_data[0])
+    {
+      int random_ID=(int)Math.round(Math.random()*(all_data.length-1));
+      if (!testing_data_ID_STRING.contains(" "+Integer.toString(random_ID)+" "))
+      {
+      testing_data_ID_STRING+=Integer.toString(random_ID)+" ";
+      testing_data=Arrays.copyOf(testing_data, testing_data.length+1);
+      testing_data[testing_data.length-1]=all_data[random_ID];
+      appended_into_testing_data_id_string+=1;
+      }
+    }
+    testing_data_ID_STRING+=" ";
+    for (int i=0; i<all_data.length; i++)
+    {
+      if (!testing_data_ID_STRING.contains(" "+Integer.toString(i)+" "))
+      {
+        training_data=Arrays.copyOf(training_data, training_data.length+1);
+        training_data[training_data.length-1]=all_data[i];
+     }
+    }
+
+    double[][][][] function_outputs={training_data, testing_data};
+    return function_outputs;
   }
 
 
@@ -111,7 +219,9 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   {
     int[] LAYERS_BEING_USED={1,2,5};
     double[] INITIALIZING_RANGE={-3,3};
+    double[][][] data={{{5},{1,2,3,4,5}},{{6},{2,3,4,5,6}}};
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
+    double[] ratios_of_data={0,1};
 
     double[] full_population_weights=all_outputs_of_init[0];
     double[] full_population_biases=all_outputs_of_init[1];
@@ -120,24 +230,22 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[] nodes_counted_in_each_layer=all_outputs_of_init[3];
 
     double[] inputs={2.25};
-    //activation functions are:
-    /*
-    1=sigmoid;
-    2=binary step;
-    3=tanh;
-    4=softplus;
-    5=gaussian;
-
-    ACTIVATION FUNCTIONS NOT CODED YET
-    ALL ELSE WORKS THOUGH
-    */
-    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, inputs, LAYERS_BEING_USED);
+    String activation_functions="";
+    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, inputs, LAYERS_BEING_USED, activation_functions);
     double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=run_network_pagacked_outputs[2];
     double[] outputs=run_network_pagacked_outputs[0][0][0];
     double[] node_firing_numbers=run_network_pagacked_outputs[1][0][0];
+    System.out.println(Arrays.toString(outputs));
+    //If you get an NaN as an output, just make the initializing range smaller.
+    //Remember to code the training testing data split function, and that you've already coded the find_cost and test functions.    double[] ratios_of_data={0, 1}; //this is only an approximation... YOU CAN DO 0,1!
 
+
+
+    double[][][][] train_test_data_split_outputs=train_test_data_split(data, ratios_of_data);
+    double[][][] training_data=train_test_data_split_outputs[0];
+    double[][][] testing_data=train_test_data_split_outputs[1];
   }
 
 }
 
-//Remember to go into https://github.com/Algorithmic-TITAN/Java_version_of_gradient_decent_algorithm_with_add_ons and drag and drop the file from file explorer into the repository to update the git repository.
+//Remember to go into https://github.com/Algorithmic-TITAN/Java_version_of_gradient_decent_algorithm_with_add_ons and drag and drop the file from file explorer (in folder src) into the repository to update the git repository.
