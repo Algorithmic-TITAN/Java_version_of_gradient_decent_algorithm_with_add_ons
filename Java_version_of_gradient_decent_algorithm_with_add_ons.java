@@ -2,12 +2,11 @@
 /*Java is capital-sensitive*/
 import java.lang.Math; /*imports java's math library*/
 import java.util.Scanner; //imports Scanner library
-
-import java.util.Collections;
-import java.util.List;
 import java.util.Random; //imports random library
 import java.util.Arrays; //lets you use arrays easily
 import java.lang.Integer;
+import java.util.Collections;
+import java.util.List;
 
 
 class Java_version_of_gradient_decent_algorithm_with_add_ons {
@@ -258,6 +257,8 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double influence_amount=0; //making it avalible for the whole funcion... widening scope of var
     double summed_influence_on_next_layer=0; //making it avalible for the whole funcion... widening scope of var
     double effect_of_bias=0; //making it avalible for the whole funcion... widening scope of var
+    double[] derivative_list_weights=empty_derivative_list_weights;
+    double[] derivative_list_biases=empty_derivative_lists_biases;
     for(int i1=0; i1<layers.length-1; i1++)
     {
       for (int i2=0; i2<layers[layers.length-i1-1]; i2++)
@@ -273,13 +274,18 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         summed_influence_on_next_layer=0;
         if (!(influence_amount==-1))
         {
-          last_layer_to_cost_effects[i2]=(double)1; //MAKE SURE YOU MAKE THIS ACTUALLY CALCULATE!!!
+          for(int i4=0; i4<influence_amount; i4++)
+          {
+            double weight_carrying_effect_value=weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[layers.length-i1-1][i4][i2];
+            double effects_in_the_last_layer=weight_carrying_effect_value*last_layer_to_cost_effects[i4];
+            summed_influence_on_next_layer+=effects_in_the_last_layer;
+          }
+          last_layer_to_cost_effects[i2]=summed_influence_on_next_layer;
         }
         else
         {
           effect_of_bias=last_layer_to_cost_effects[i2];
           last_layer_to_cost_effects[i1]=effect_of_bias;
-          biases_went_back_counter+=1;
         }
       if (!(influence_amount==-1))
       {
@@ -290,23 +296,25 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       {
         last_layer_to_cost_effects[i3+last_layer_to_cost_effects_LEN]=(double)0;
       }
-      // CURRENTLY YOU ARE THOUGH LINE 224 OF THE PYTHON CODE (IN VISUAL STUDIO). EVERYTHING WORKS.
+      //MAKE WEIGHT DERIVATIVES HERE
+      for (int i5=0; i5<layers[layers.length-1-i1]; i5++)
+      {
+        derivative_list_biases[derivative_list_biases.length-biases_went_back_counter-1]=last_layer_to_cost_effects[i5];
+        biases_went_back_counter++;
+      }
     }
+    double[][] packaged_outputs={{},{}};
+    packaged_outputs[1]=derivative_list_biases;
 
     //THE CODE BELOW IS JUST SO I CAN EASILY TEST, IT CHANGES NOTHING. DO NOT KEEP.
-    double[][] packaged_outputs={{},{}};
     for (int asdffdsaasdf=0; asdffdsaasdf<full_population_weights.length; asdffdsaasdf++)
     {
       packaged_outputs[0]=Arrays.copyOf(packaged_outputs[0], packaged_outputs[0].length+1);
       packaged_outputs[0][packaged_outputs[0].length-1]=(double)0.0;
     }
-    for (int fdsaasdf=0; fdsaasdf<full_population_biases.length; fdsaasdf++)
-    {
-      packaged_outputs[1]=Arrays.copyOf(packaged_outputs[1], packaged_outputs[1].length+1);
-      packaged_outputs[1][packaged_outputs[1].length-1]=(double)0.0;
-    }
     return packaged_outputs;
   }
+
 
 
 
@@ -319,16 +327,13 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       double[][] weights_and_biases_packaged_derivatives=find_which_way_to_nudge_values(layers, i, activation_functions, full_population_weights, full_population_biases, empty_derivative_list_weights, empty_derivative_lists_biases, training_data, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty);
       double[] derivatives_in_network_weights=weights_and_biases_packaged_derivatives[0];
       double[] derivatives_in_network_biases=weights_and_biases_packaged_derivatives[1];
-
-      //CURRENTLY IT DOES THE BACKPROPOGATION FOR EVERY SINGLE TRAINING DATA PEICE. MAKE IT SO IT ONLY HAS TO FIND IT ONCE, THEN MULTIPLY BY THE DERIVATIVE AT THE END OF THE NETWORK. REMEMBER. "DATA INSTANCE" SHOULD NOT BE A VARIABLE.
-
       for (int i1=0; i1<weights_amount; i1++)
       {
         packaged_outputs[0][i1]+=derivatives_in_network_weights[i1]*learning_rate*-1/training_data.length;
       }
       for(int i2=0; i2<biases_amount; i2++)
       {
-        packaged_outputs[1][i2]+=derivatives_in_network_biases[i2]*learning_rate*-1/training_data.length;
+        packaged_outputs[1][i2]+=(derivatives_in_network_biases[i2]*learning_rate*-1)/training_data.length;
       }
     }
 
@@ -378,7 +383,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     }
     int[] layers=layers_for_efficiency;
     double[][] function_outputs={last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY};
-    System.out.println(Arrays.toString(last_layer_to_cost_effects_EMPTY));
     return function_outputs;
   }
 
@@ -387,14 +391,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   public static void main(String[] args) 
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={1,2,7,10,5,1};
-    int[] LAYERS_BEING_USED={1,2,7,10,5,1};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={1,2,7,1};
+    int[] LAYERS_BEING_USED={1,2,7,1};
     double[] INITIALIZING_RANGE={-3,3};
-    double[][][] data={{{5},{1}},{{6},{2}}, {{7},{3}}};
+    double[][][] data={{{5},{1}}};
     String activation_functions="";
     double[] ratios_of_data={0,1};
-    double learning_rate=0.001;
-    int epoch_amount=10; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final double learning_rate=0.0000001;
+    int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     //getting ready for the main computation
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
@@ -421,7 +425,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[] outputs=run_network_pagacked_outputs[0][0][0];
     double[] node_firing_numbers=run_network_pagacked_outputs[1][0][0];
     //If you get an NaN as an output, just make the initializing range smaller.
-    //Remember to code the training testing data split function, and that you've already coded the find_cost and test functions.
     //MAKE SURE THE ACTIVATION FUNCTIONS' DERIVATIVES WORK.
 
     //Main loop that actually trains the network
