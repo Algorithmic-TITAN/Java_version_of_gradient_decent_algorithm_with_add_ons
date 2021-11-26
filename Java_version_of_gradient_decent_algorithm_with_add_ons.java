@@ -305,6 +305,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     }
     double[][] packaged_outputs={{},{}};
     packaged_outputs[1]=derivative_list_biases;
+    //CURRENTLY ONLY THE BIASES ARE CODED, BUT THEY ARE FULLY CODED.
 
     //THE CODE BELOW IS JUST SO I CAN EASILY TEST, IT CHANGES NOTHING. DO NOT KEEP.
     for (int asdffdsaasdf=0; asdffdsaasdf<full_population_weights.length; asdffdsaasdf++)
