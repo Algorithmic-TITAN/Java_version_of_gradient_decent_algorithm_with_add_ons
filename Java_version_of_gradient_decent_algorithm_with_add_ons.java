@@ -56,7 +56,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
     outputs_of_init[3]=Arrays.copyOf(outputs_of_init[3], outputs_of_init[3].length+1);
     outputs_of_init[3]=nodes_counted_in_each_layer;
-    
     return (double[][])outputs_of_init;
   }
 
@@ -217,7 +216,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
 
-  public static double[][] find_which_way_to_nudge_values(int[] layers, int DATA_INSTANCE, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[][][] training_data, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty)
+  public static double[][] find_which_way_to_nudge_values(int[] layers, int DATA_INSTANCE, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[][][] training_data, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer)
   {
     activation_functions=activation_functions.replace("binary_step","");
     activation_functions=activation_functions.replace("binarystep", "");
@@ -254,6 +253,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     }
     int last_layer_to_cost_effects_LEN=layers[layers.length-1];
     int biases_went_back_counter=0;
+    int weights_went_back_counter=0;
     double influence_amount=0; //making it avalible for the whole funcion... widening scope of var
     double summed_influence_on_next_layer=0; //making it avalible for the whole funcion... widening scope of var
     double effect_of_bias=0; //making it avalible for the whole funcion... widening scope of var
@@ -287,45 +287,49 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
           effect_of_bias=last_layer_to_cost_effects[i2];
           last_layer_to_cost_effects[i1]=effect_of_bias;
         }
+      }
+            
       if (!(influence_amount==-1))
       {
       last_layer_to_cost_effects_LEN=layers[layers.length-i1-1];
-      }
       }
       for(int i3=0; i3<(last_layer_to_cost_effects.length-last_layer_to_cost_effects_LEN); i3++)
       {
         last_layer_to_cost_effects[i3+last_layer_to_cost_effects_LEN]=(double)0;
       }
-      //MAKE WEIGHT DERIVATIVES HERE
+
+      for (int i6=0; i6<layers[layers.length-i1-1]; i6++)
+      {
+        for(int i7=0; i7<layers[layers.length-i1-2]; i7++)
+        {
+          derivative_list_weights[derivative_list_weights.length-weights_went_back_counter-1]=(last_layer_to_cost_effects[last_layer_to_cost_effects_LEN-i6-1])*node_firing_numbers[(int)((layers[layers.length-i1-2]-i7-1)+nodes_counted_in_each_layer[layers.length-i1-2])];
+          weights_went_back_counter++;
+        }
+      }
       for (int i5=0; i5<layers[layers.length-1-i1]; i5++)
       {
         derivative_list_biases[derivative_list_biases.length-biases_went_back_counter-1]=last_layer_to_cost_effects[i5];
         biases_went_back_counter++;
       }
+
+
     }
     double[][] packaged_outputs={{},{}};
     packaged_outputs[1]=derivative_list_biases;
-    //CURRENTLY ONLY THE BIASES ARE CODED, BUT THEY ARE FULLY CODED.
-
-    //THE CODE BELOW IS JUST SO I CAN EASILY TEST, IT CHANGES NOTHING. DO NOT KEEP.
-    for (int asdffdsaasdf=0; asdffdsaasdf<full_population_weights.length; asdffdsaasdf++)
-    {
-      packaged_outputs[0]=Arrays.copyOf(packaged_outputs[0], packaged_outputs[0].length+1);
-      packaged_outputs[0][packaged_outputs[0].length-1]=(double)0.0;
-    }
+    packaged_outputs[0]=derivative_list_weights;
     return packaged_outputs;
   }
 
 
 
 
-  public static double[][] take_gradient_decent_step(int[] layers, String activation_functions, double[][][] training_data, double weights_amount, double biases_amount, double[] full_population_weights, double[] full_population_biases, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty)
+  public static double[][] take_gradient_decent_step(int[] layers, String activation_functions, double[][][] training_data, double weights_amount, double biases_amount, double[] full_population_weights, double[] full_population_biases, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer)
   {
     double[][] packaged_outputs={full_population_weights,full_population_biases};
 
     for(int i=0; i<training_data.length; i++)
     {
-      double[][] weights_and_biases_packaged_derivatives=find_which_way_to_nudge_values(layers, i, activation_functions, full_population_weights, full_population_biases, empty_derivative_list_weights, empty_derivative_lists_biases, training_data, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty);
+      double[][] weights_and_biases_packaged_derivatives=find_which_way_to_nudge_values(layers, i, activation_functions, full_population_weights, full_population_biases, empty_derivative_list_weights, empty_derivative_lists_biases, training_data, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty, nodes_counted_in_each_layer);
       double[] derivatives_in_network_weights=weights_and_biases_packaged_derivatives[0];
       double[] derivatives_in_network_biases=weights_and_biases_packaged_derivatives[1];
       for (int i1=0; i1<weights_amount; i1++)
@@ -392,14 +396,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   public static void main(String[] args) 
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={1,2,7,1};
-    int[] LAYERS_BEING_USED={1,2,7,1};
-    double[] INITIALIZING_RANGE={-3,3};
-    double[][][] data={{{5},{1}}};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={1,5,7,10,1};
+    int[] LAYERS_BEING_USED={1,5,7,10,1};
+    double[] INITIALIZING_RANGE={-0.3,0.3};
+    double[][][] data={{{5},{1}}, {{6},{2}}, {{7},{3}}, {{8},{4}}, {{9},{5}}, {{10},{6}}};
     String activation_functions="";
-    double[] ratios_of_data={0,1};
-    final double learning_rate=0.0000001;
-    int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    double[] ratios_of_data={0.1,0.9};
+    final double learning_rate=0.001;
+    final int epoch_amount=1000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     //getting ready for the main computation
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
@@ -431,13 +435,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     //Main loop that actually trains the network
     for (int i=0; i<epoch_amount; i++)
     {
-    double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY);
+    double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer);
     full_population_weights=new_weights_and_biases[0];
     full_population_biases=new_weights_and_biases[1];
     }
     //REMEMBER THAT SINCE JAVA IS SLOWER THAN PYTHON AT LIST APPENDING, MINIMALIZE APPENDING TO MAKE IT FASTER (YOU CAN DO THIS BY ONLY CHANGING PARTS OF A LIST, INSTEAD OF RECREATING THEM) DO THIS FOR EVERY FUNCTION, INCLUDING ONES ALREADY MADE.
 
     System.out.println("Stuff done");
+    //EVERYTHING IN THIS ALGORITHM IS DONE. OTHER THAN ADD-ONS AND THE GENETIC ALGORITHM, IT IS FULLY CAUGHT UP TO PYTHON.
 
   } 
 
