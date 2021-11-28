@@ -423,14 +423,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[] weight_surrounding_layer_numbers_EMPTY=packaged_last_layer_to_cost_effects_and_weight_surrounding_layer_numbers_empty_lists_for_efficiency_outputs[1];
 
 
-    //just running the network once while I'm creating the algorithm
-    double[] inputs={2.25};
-    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, inputs, LAYERS_BEING_USED, activation_functions);
-    double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=run_network_pagacked_outputs[2];
-    double[] outputs=run_network_pagacked_outputs[0][0][0];
-    double[] node_firing_numbers=run_network_pagacked_outputs[1][0][0];
     //If you get an NaN as an output, just make the initializing range smaller.
-    //MAKE SURE THE ACTIVATION FUNCTIONS' DERIVATIVES WORK.
 
     //Main loop that actually trains the network
     for (int i=0; i<epoch_amount; i++)
