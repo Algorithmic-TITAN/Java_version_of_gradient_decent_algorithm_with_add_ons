@@ -1,12 +1,12 @@
 /* class name MUST BE THE SAME AS THE FILE NAME */
 /*Java is capital-sensitive*/
 import java.lang.Math; /*imports java's math library*/
-import java.util.Scanner; //imports Scanner library
 import java.util.Random; //imports random library
 import java.util.Arrays; //lets you use arrays easily
 import java.lang.Integer;
-import java.util.Collections;
-import java.util.List;
+import java.lang.String;
+import java.lang.Double;
+import java.io.*;
 
 
 class Java_version_of_gradient_decent_algorithm_with_add_ons {
@@ -317,6 +317,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[][] packaged_outputs={{},{}};
     packaged_outputs[1]=derivative_list_biases;
     packaged_outputs[0]=derivative_list_weights;
+
     return packaged_outputs;
   }
 
@@ -391,19 +392,184 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     return function_outputs;
   }
 
+  public static String get_text_data()
+  {
+      BufferedReader file_contents;
+      String file_contents_string="";
+      try
+      {
+          file_contents=new BufferedReader(new FileReader(("C:\\Users\\andre\\OneDrive\\Desktop\\text_to_array_file_converter_file\\text_to_read_from.txt"))); //DO NOT CHANGE THIS PATH!!!!!
+          file_contents_string=file_contents.readLine();
+      }
+      catch (Exception ex)
+      {
+
+      }
+      return file_contents_string;
+  }
+
+  public static double[][][] convert_data(String text_file_text_in_string, int data_instance_amount, int network_inputs_amount,  int network_outputs_amount, boolean print_data)
+  {
+      //getting ready for main conversion loop
+      text_file_text_in_string=text_file_text_in_string.replace(" ", "");
+      double[][][] end_array={};
+      double[][] sample_data_instance_empty={{},{}};
+      end_array=Arrays.copyOf(end_array, data_instance_amount);
+      for (int end_array_making_for_loop=0; end_array_making_for_loop<data_instance_amount; end_array_making_for_loop++)
+      {
+          end_array[end_array_making_for_loop]=sample_data_instance_empty;
+      }
+      int character_counter_passed_all=1;
 
 
-  public static void main(String[] args) 
+      //main conversion loop
+      for(int i=0; i<data_instance_amount; i++)
+      {
+          boolean end_of_instance_reached=false; //FOR BOTH INPUTS AND OUTPUTS
+          int character_counter_passed_data_intsance=0; //FOR BOTH INPUTS AND OUTPUTS
+          int array_ends_found_so_far=0; //FOR BOTH INPUTS AND OUTPUTS
+
+          String string_version_of_what_to_convert_INPUTS=""; //FOR INPUTS
+          int inputs_finished_so_far=0; //FOR ONLY INPUTS
+          boolean currently_REALLY_inside_inputs=false; //FOR ONLY INPUTS
+          boolean currently_counting_inside_inputs=false; //FOR ONLY INPUTS
+          double[] current_inputs_finding={}; //FOR ONLY INPUTS
+          current_inputs_finding=Arrays.copyOf(current_inputs_finding, network_inputs_amount); //FOR ONLY INPUTS
+
+          String string_version_of_what_to_convert_OUTPUTS=""; //FOR OUTPUTS
+          boolean currently_inside_outputs=false; //FOR ONLY OUTPUTS
+          boolean currently_REALLY_inside_outputs=false; //FOR ONLY OUTPUTS
+          int outputs_finished_so_far=0; //FOR ONLY OUTPUTS
+          double[] current_outputs_finding={};
+          current_outputs_finding=Arrays.copyOf(current_outputs_finding, network_outputs_amount);
+
+          while(end_of_instance_reached==false)
+          {
+              if((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)==',') && (currently_counting_inside_inputs==true)) //FOR INPUTS. CHANGE TO MAKE IT DIFFERENT FROM OUTPTUS!!!
+              {
+                  currently_counting_inside_inputs=false;
+                  double double_converted_inputs=Double.parseDouble(string_version_of_what_to_convert_INPUTS);
+                  current_inputs_finding[inputs_finished_so_far]=double_converted_inputs;
+                  inputs_finished_so_far+=1;
+                  string_version_of_what_to_convert_INPUTS="";
+              }
+              if ((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)=='}') && (currently_REALLY_inside_inputs=true)) //FOR INPUTS
+              {
+                  double double_converted_inputs;
+                  currently_counting_inside_inputs=false;
+                  currently_REALLY_inside_inputs=false;
+                  try
+                  {
+                      double_converted_inputs=Double.parseDouble(string_version_of_what_to_convert_INPUTS);
+                      current_inputs_finding[inputs_finished_so_far]=double_converted_inputs;
+                  }
+                  catch (Exception ex)
+                  {
+                      double_converted_inputs=0.0;
+                  }
+              }
+
+              if((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)==',') && (currently_inside_outputs==true)) //FOR OUTPUTS.
+              {
+                  currently_inside_outputs=false;
+                  double double_converted_outputs=Double.parseDouble(string_version_of_what_to_convert_OUTPUTS);
+                  current_outputs_finding[outputs_finished_so_far]=double_converted_outputs;
+                  outputs_finished_so_far+=1;
+                  string_version_of_what_to_convert_OUTPUTS="";
+              }
+              if ((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)=='}') && (currently_REALLY_inside_outputs=true)) //FOR OUTPUTS
+              {
+                  double double_converted_outputs;
+                  currently_inside_outputs=false;
+                  currently_REALLY_inside_outputs=false;
+                  try
+                  {
+                      double_converted_outputs=Double.parseDouble(string_version_of_what_to_convert_OUTPUTS);
+                      current_outputs_finding[outputs_finished_so_far]=double_converted_outputs;
+                  }
+                  catch (Exception ex)
+                  {
+                      double_converted_outputs=0.0;
+                  }
+              }
+
+              
+              if (text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)=='}') //FOR BOTH INPUTS AND OUTPUTS
+              {
+                  array_ends_found_so_far+=1;
+                  currently_counting_inside_inputs=false;
+                  currently_REALLY_inside_inputs=false;
+                  currently_inside_outputs=false;
+                  currently_REALLY_inside_outputs=false;
+                  string_version_of_what_to_convert_INPUTS="";
+                  string_version_of_what_to_convert_OUTPUTS="";
+              }
+              if(array_ends_found_so_far==3) //FOR BOTH INPUTS AND OUTPUTS
+              {
+                  end_of_instance_reached=true;
+              }
+
+              if (currently_counting_inside_inputs==true) //FOR ONLY INPUTS
+              {
+                  string_version_of_what_to_convert_INPUTS=string_version_of_what_to_convert_INPUTS.concat(String.valueOf(text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)));
+              }
+              if (currently_inside_outputs==true) //FOR ONLY OUTUPTS
+              {
+                  string_version_of_what_to_convert_OUTPUTS=string_version_of_what_to_convert_OUTPUTS.concat(String.valueOf(text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)));
+              }
+
+
+              if((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)=='{') && (text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance-1)=='{') && !(character_counter_passed_all+character_counter_passed_data_intsance-2==-1)) //for inputs
+              {
+                  currently_counting_inside_inputs=true;
+                  currently_REALLY_inside_inputs=true;
+                  string_version_of_what_to_convert_INPUTS="";
+              }
+              if ((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)=='{') && (text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance-1)==',') && !(text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance-3)=='}')) //for outputs
+              {   
+                  currently_inside_outputs=true;
+                  currently_REALLY_inside_outputs=true;
+                  string_version_of_what_to_convert_OUTPUTS="";
+              }
+
+              if ((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)==',') && currently_REALLY_inside_inputs) //FOR INPUTS
+              {
+                  currently_counting_inside_inputs=true;
+              }
+              if ((text_file_text_in_string.charAt(character_counter_passed_all+character_counter_passed_data_intsance)==',') && currently_REALLY_inside_outputs) //FOR OUTUPTS
+              {
+                  currently_inside_outputs=true;
+              }
+              character_counter_passed_data_intsance+=1;
+          }
+          end_array[i]=new double[][] {current_inputs_finding, current_outputs_finding};
+          character_counter_passed_all+=character_counter_passed_data_intsance;
+      }
+
+      //printing stuff and returning
+      if (print_data==true)
+      {
+      System.out.print("Text file data: ");
+      System.out.println(text_file_text_in_string);
+      }
+      return end_array;
+  }
+
+
+
+  public static void main(String[] args)
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={1,5,7,10,1};
-    int[] LAYERS_BEING_USED={1,5,7,10,1};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,1};
+    int[] LAYERS_BEING_USED={17,10,10,1};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    double[][][] data={{{5},{1}}, {{6},{2}}, {{7},{3}}, {{8},{4}}, {{9},{5}}, {{10},{6}}};
+    int data_instance_amount=970;
+    String STRING_VERSION_OF_DATA=get_text_data();
+    double[][][] data=convert_data(STRING_VERSION_OF_DATA, data_instance_amount, LAYERS_BEING_USED[0], LAYERS_BEING_USED[LAYERS_BEING_USED.length-1], true);
     String activation_functions="";
-    double[] ratios_of_data={0.1,0.9};
+    double[] ratios_of_data={0,1};
     final double learning_rate=0.001;
-    final int epoch_amount=1000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     //getting ready for the main computation
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
@@ -426,11 +592,22 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     //If you get an NaN as an output, just make the initializing range smaller.
 
     //Main loop that actually trains the network
-    for (int i=0; i<epoch_amount; i++)
+    for (double i=0; i<epoch_amount; i++)
     {
     double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer);
     full_population_weights=new_weights_and_biases[0];
     full_population_biases=new_weights_and_biases[1];
+
+    System.out.print(i+" epochs have passed    ");
+    double rounded_epoch_amount=Math.round(i/10);
+    if ((i/10)==rounded_epoch_amount)
+    {
+      System.out.println("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases));
+    }
+    else
+    {
+      System.out.println();
+    }
     }
     //REMEMBER THAT SINCE JAVA IS SLOWER THAN PYTHON AT LIST APPENDING, MINIMALIZE APPENDING TO MAKE IT FASTER (YOU CAN DO THIS BY ONLY CHANGING PARTS OF A LIST, INSTEAD OF RECREATING THEM) DO THIS FOR EVERY FUNCTION, INCLUDING ONES ALREADY MADE.
 
