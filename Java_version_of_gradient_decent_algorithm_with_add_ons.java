@@ -67,10 +67,20 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[] node_firing_numbers={};
     double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer={};
     double[] NODES_PROSCESSED=INPUTS;
+    int node_firing_numbers_LEN=0;
+    int nodes_proscessing_LENGTH=0;
+    for (int node_firing_numbers_len_finder=0; node_firing_numbers_len_finder<layers.length; node_firing_numbers_len_finder++)
+    {
+        node_firing_numbers_LEN+=layers[node_firing_numbers_len_finder];
+        if (nodes_proscessing_LENGTH<layers[node_firing_numbers_len_finder])
+        {
+          nodes_proscessing_LENGTH=layers[node_firing_numbers_len_finder];
+        }
+    }
+    node_firing_numbers=Arrays.copyOf(node_firing_numbers, node_firing_numbers_LEN);
     for (int i=0; i<INPUTS.length; i++)
     {
-      node_firing_numbers=Arrays.copyOf(node_firing_numbers, node_firing_numbers.length+1);
-      node_firing_numbers[node_firing_numbers.length-1]=INPUTS[i];
+      node_firing_numbers[i]=INPUTS[i];
     }
     int computationoal_part_weights=0;
     int computationoal_part_biases=0;
@@ -78,6 +88,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     for (int i1=0; i1<layers.length-1;i1++)
     {
       double[] nodes_proscessing={};
+      nodes_proscessing=Arrays.copyOf(nodes_proscessing, nodes_proscessing_LENGTH);
       weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length+1);
       weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length-1]=new double[][] {};
       for (int i2=0; i2<layers[i1+1]; i2++)
@@ -93,11 +104,9 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
           computationoal_part_weights++;
           node_in_next_layer_VALUE+=edge_value;
         }
-      nodes_proscessing=Arrays.copyOf(nodes_proscessing, nodes_proscessing.length+1);
-      nodes_proscessing[nodes_proscessing.length-1]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
-      node_firing_numbers=Arrays.copyOf(node_firing_numbers, node_firing_numbers.length+1);
-      node_firing_numbers[node_firing_numbers.length-1]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
-      computationoal_part_biases++;
+        nodes_proscessing[i2]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
+        node_firing_numbers[computationoal_part_biases+layers[0]]=node_in_next_layer_VALUE+running_network_biases[computationoal_part_biases];
+        computationoal_part_biases++;
       }
       NODES_PROSCESSED=nodes_proscessing;
     }
@@ -563,14 +572,17 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,1};
     int[] LAYERS_BEING_USED={17,10,10,1};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    int data_instance_amount=970;
+    int data_instance_amount=26482;
+    //int data_instance_amount=1;
+    System.out.println("Retreiving data...");
     String STRING_VERSION_OF_DATA=get_text_data();
-    double[][][] data=convert_data(STRING_VERSION_OF_DATA, data_instance_amount, LAYERS_BEING_USED[0], LAYERS_BEING_USED[LAYERS_BEING_USED.length-1], true);
+    double[][][] data=convert_data(STRING_VERSION_OF_DATA, data_instance_amount, LAYERS_BEING_USED[0], LAYERS_BEING_USED[LAYERS_BEING_USED.length-1], false);
     String activation_functions="";
     double[] ratios_of_data={0,1};
-    final double learning_rate=0.001;
-    final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final double learning_rate=0.0001;
+    final int epoch_amount=1000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
+    System.out.println("Getting ready...");
     //getting ready for the main computation
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
     double[][][][] train_test_data_split_outputs=train_test_data_split(data, ratios_of_data);
@@ -590,15 +602,26 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
     //If you get an NaN as an output, just make the initializing range smaller.
-
+    System.out.println("Starting! ");
     //Main loop that actually trains the network
     for (double i=0; i<epoch_amount; i++)
     {
+    long start_time_milliseconds=System.currentTimeMillis();
     double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer);
     full_population_weights=new_weights_and_biases[0];
     full_population_biases=new_weights_and_biases[1];
+    if (i/100==Math.round(i/100))
+    {
+      System.out.print("Weights so far: ");
+      System.out.println(Arrays.toString(full_population_weights));
+      System.out.print("Biases so far: ");
+      System.out.println(Arrays.toString(full_population_biases));
+    }
 
     System.out.print(i+" epochs have passed    ");
+    System.out.print("(");
+    System.out.print(System.currentTimeMillis()-start_time_milliseconds);
+    System.out.print("ms) ");
     double rounded_epoch_amount=Math.round(i/10);
     if ((i/10)==rounded_epoch_amount)
     {
@@ -610,7 +633,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     }
     }
     //REMEMBER THAT SINCE JAVA IS SLOWER THAN PYTHON AT LIST APPENDING, MINIMALIZE APPENDING TO MAKE IT FASTER (YOU CAN DO THIS BY ONLY CHANGING PARTS OF A LIST, INSTEAD OF RECREATING THEM) DO THIS FOR EVERY FUNCTION, INCLUDING ONES ALREADY MADE.
-
+    //MAKE SURE TO OPTIMIZE run_network's weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer variable creation.
     System.out.println("Stuff done");
     //EVERYTHING IN THIS ALGORITHM IS DONE. OTHER THAN ADD-ONS AND THE GENETIC ALGORITHM, IT IS FULLY CAUGHT UP TO PYTHON.
 
