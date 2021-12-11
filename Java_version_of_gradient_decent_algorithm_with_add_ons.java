@@ -60,12 +60,12 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   }
 
 
-  public static double[][][][] run_network(double[] full_population_weights, double[] full_population_biases, double[] INPUTS, int[] layers, String activation_functions)
+  public static double[][][][] run_network(double[] full_population_weights, double[] full_population_biases, double[] INPUTS, int[] layers, String activation_functions, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)
   {
     double[] running_network_weights=full_population_weights;
     double[] running_network_biases=full_population_biases;
     double[] node_firing_numbers={};
-    double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer={};
+    double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer;
     double[] NODES_PROSCESSED=INPUTS;
     int node_firing_numbers_LEN=0;
     int nodes_proscessing_LENGTH=0;
@@ -89,18 +89,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     {
       double[] nodes_proscessing={};
       nodes_proscessing=Arrays.copyOf(nodes_proscessing, nodes_proscessing_LENGTH);
-      weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length+1);
-      weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer.length-1]=new double[][] {};
+      //MAKE THE weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer variable's base in another funciton so it will be much faster.
       for (int i2=0; i2<layers[i1+1]; i2++)
       {
         double node_in_next_layer_VALUE=0;
-        weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1]=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1], weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1].length+1);
-        weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1].length-1]=new double[] {};
         for (int i3=0; i3<layers[i1]; i3++)
         {
           double edge_value=running_network_weights[computationoal_part_weights]*NODES_PROSCESSED[i3];
-          weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2]=Arrays.copyOf(weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2], weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2].length+1);
-          weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2][weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2].length-1]=running_network_weights[computationoal_part_weights];
+          weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer[i1][i2][i3]=running_network_weights[computationoal_part_weights];
           computationoal_part_weights++;
           node_in_next_layer_VALUE+=edge_value;
         }
@@ -176,14 +172,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
 
-  public static double test(double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases)
+  public static double test(double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)
   {
     double error=0;
     for (int i=0; i<test_data.length; i++)
     {
       for (int i1=0; i1<layers[layers.length-1]; i1++)
       {
-        error+=Math.pow(run_network(full_population_weights, full_population_biases, test_data[i][0], layers, activation_functions)[0][0][0][i1]-test_data[i][1][i1], 2);
+        error+=Math.pow(run_network(full_population_weights, full_population_biases, test_data[i][0], layers, activation_functions, empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)[0][0][0][i1]-test_data[i][1][i1], 2);
       }
     }
 
@@ -225,11 +221,11 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
 
-  public static double[][] find_which_way_to_nudge_values(int[] layers, int DATA_INSTANCE, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[][][] training_data, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer)
+  public static double[][] find_which_way_to_nudge_values(int[] layers, int DATA_INSTANCE, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[][][] training_data, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)
   {
     activation_functions=activation_functions.replace("binary_step","");
     activation_functions=activation_functions.replace("binarystep", "");
-    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, training_data[DATA_INSTANCE][0], layers, activation_functions);
+    double[][][][] run_network_pagacked_outputs=run_network(full_population_weights, full_population_biases, training_data[DATA_INSTANCE][0], layers, activation_functions, empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer);
     double[][][] weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer=run_network_pagacked_outputs[2];
     double[] outputs=run_network_pagacked_outputs[0][0][0];
     double[] node_firing_numbers=run_network_pagacked_outputs[1][0][0];
@@ -333,13 +329,13 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
 
-  public static double[][] take_gradient_decent_step(int[] layers, String activation_functions, double[][][] training_data, double weights_amount, double biases_amount, double[] full_population_weights, double[] full_population_biases, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer)
+  public static double[][] take_gradient_decent_step(int[] layers, String activation_functions, double[][][] training_data, double weights_amount, double biases_amount, double[] full_population_weights, double[] full_population_biases, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer,double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)
   {
     double[][] packaged_outputs={full_population_weights,full_population_biases};
 
     for(int i=0; i<training_data.length; i++)
     {
-      double[][] weights_and_biases_packaged_derivatives=find_which_way_to_nudge_values(layers, i, activation_functions, full_population_weights, full_population_biases, empty_derivative_list_weights, empty_derivative_lists_biases, training_data, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty, nodes_counted_in_each_layer);
+      double[][] weights_and_biases_packaged_derivatives=find_which_way_to_nudge_values(layers, i, activation_functions, full_population_weights, full_population_biases, empty_derivative_list_weights, empty_derivative_lists_biases, training_data, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty, nodes_counted_in_each_layer, empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer);
       double[] derivatives_in_network_weights=weights_and_biases_packaged_derivatives[0];
       double[] derivatives_in_network_biases=weights_and_biases_packaged_derivatives[1];
       for (int i1=0; i1<weights_amount; i1++)
@@ -564,6 +560,23 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       return end_array;
   }
 
+  public static double[][][] initialize_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed(int[] layers)
+  {
+    double[][][] output_array={};
+    output_array=Arrays.copyOf(output_array, layers.length-1);
+    for (int i=0; i<output_array.length; i++)
+    {
+      output_array[i]=Arrays.copyOf(new double[][] {}, layers[i+1]);
+      for (int i1=0; i1<output_array[i].length; i1++)
+      {
+        output_array[i][i1]=new double[] {};
+        output_array[i][i1]=Arrays.copyOf(output_array[i][i1], layers[i]);
+      }
+    }
+    
+    return output_array;
+  }
+
 
 
   public static void main(String[] args)
@@ -580,11 +593,12 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     String activation_functions="";
     double[] ratios_of_data={0,1};
     final double learning_rate=0.0001;
-    final int epoch_amount=1000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final int epoch_amount=50; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
     //getting ready for the main computation
     double[][] all_outputs_of_init=init(LAYERS_BEING_USED, INITIALIZING_RANGE);
+    double[][][] initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed=initialize_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed(LAYERS_BEING_USED);
     double[][][][] train_test_data_split_outputs=train_test_data_split(data, ratios_of_data);
     double[][][] training_data=train_test_data_split_outputs[0];
     double[][][] testing_data=train_test_data_split_outputs[1];
@@ -606,32 +620,33 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     //Main loop that actually trains the network
     for (double i=0; i<epoch_amount; i++)
     {
-    long start_time_milliseconds=System.currentTimeMillis();
-    double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer);
-    full_population_weights=new_weights_and_biases[0];
-    full_population_biases=new_weights_and_biases[1];
-    if (i/100==Math.round(i/100))
-    {
-      System.out.print("Weights so far: ");
-      System.out.println(Arrays.toString(full_population_weights));
-      System.out.print("Biases so far: ");
-      System.out.println(Arrays.toString(full_population_biases));
-    }
+      long start_time_milliseconds=System.currentTimeMillis();
+      double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
+      full_population_weights=new_weights_and_biases[0];
+      full_population_biases=new_weights_and_biases[1];
+      if (i/100==Math.round(i/100))
+      {
+        System.out.print("Weights so far: ");
+        System.out.println(Arrays.toString(full_population_weights));
+        System.out.print("Biases so far: ");
+        System.out.println(Arrays.toString(full_population_biases));
+      }
 
-    System.out.print(i+" epochs have passed    ");
-    System.out.print("(");
-    System.out.print(System.currentTimeMillis()-start_time_milliseconds);
-    System.out.print("ms) ");
-    double rounded_epoch_amount=Math.round(i/10);
-    if ((i/10)==rounded_epoch_amount)
-    {
-      System.out.println("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases));
+      System.out.print(i+" epochs have passed    ");
+      System.out.print("(");
+      System.out.print(System.currentTimeMillis()-start_time_milliseconds);
+      System.out.print("ms) ");
+      double rounded_epoch_amount=Math.round(i/10);
+      if ((i/10)==rounded_epoch_amount)
+      {
+        System.out.println("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
+      }
+      else
+      {
+        System.out.println();
+      }
     }
-    else
-    {
-      System.out.println();
-    }
-    }
+    //MAKE SURE THAT YOU REMEMBER TO ACTUALLY USE THE EMPTY ARRAY TO MAKE IT FASTER, AND MAKE SURE TO MAKE SURE THAT THE EMPTY ARRAY IT RELIES ON IS INITIALIZED CORRECTLY.
     //REMEMBER THAT SINCE JAVA IS SLOWER THAN PYTHON AT LIST APPENDING, MINIMALIZE APPENDING TO MAKE IT FASTER (YOU CAN DO THIS BY ONLY CHANGING PARTS OF A LIST, INSTEAD OF RECREATING THEM) DO THIS FOR EVERY FUNCTION, INCLUDING ONES ALREADY MADE.
     //MAKE SURE TO OPTIMIZE run_network's weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer variable creation.
     System.out.println("Stuff done");
