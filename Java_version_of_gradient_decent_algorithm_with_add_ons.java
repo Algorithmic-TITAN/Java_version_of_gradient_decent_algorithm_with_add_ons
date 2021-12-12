@@ -593,7 +593,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     String activation_functions="";
     double[] ratios_of_data={0,1};
     final double learning_rate=0.0001;
-    final int epoch_amount=50; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
     //getting ready for the main computation
@@ -646,9 +646,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         System.out.println();
       }
     }
-    //MAKE SURE THAT YOU REMEMBER TO ACTUALLY USE THE EMPTY ARRAY TO MAKE IT FASTER, AND MAKE SURE TO MAKE SURE THAT THE EMPTY ARRAY IT RELIES ON IS INITIALIZED CORRECTLY.
-    //REMEMBER THAT SINCE JAVA IS SLOWER THAN PYTHON AT LIST APPENDING, MINIMALIZE APPENDING TO MAKE IT FASTER (YOU CAN DO THIS BY ONLY CHANGING PARTS OF A LIST, INSTEAD OF RECREATING THEM) DO THIS FOR EVERY FUNCTION, INCLUDING ONES ALREADY MADE.
-    //MAKE SURE TO OPTIMIZE run_network's weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer variable creation.
     System.out.println("Stuff done");
     //EVERYTHING IN THIS ALGORITHM IS DONE. OTHER THAN ADD-ONS AND THE GENETIC ALGORITHM, IT IS FULLY CAUGHT UP TO PYTHON.
 
