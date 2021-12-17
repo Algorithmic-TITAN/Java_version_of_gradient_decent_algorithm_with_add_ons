@@ -790,7 +790,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         {
           epochs_done_boredom=0;
         }
-        System.out.println(epochs_done_boredom);
         System.out.println("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
       }
       else
