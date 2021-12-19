@@ -808,11 +808,29 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       full_population_weights=new_weights_and_biases[0];
       full_population_biases=new_weights_and_biases[1];
       if (i/100==Math.round(i/100))
-      {
+      {    
+        try
+        {  
+        int best_network_recorded_index=0;
+        double best_network_recorded_error=recorded_networks_so_far[0][2][0];
+        for (int best_network_finding_main=0; best_network_finding_main<recorded_networks_so_far.length; best_network_finding_main++)
+        {
+          if (recorded_networks_so_far[best_network_finding_main][2][0]<best_network_recorded_error)
+          {
+            best_network_recorded_index=best_network_finding_main;
+            best_network_recorded_error=recorded_networks_so_far[best_network_finding_main][2][0];
+          }
+        }
+
         System.out.print("Weights so far: "); //MAKE this say BEST NETWORK
-        System.out.println(Arrays.toString(full_population_weights));
+        System.out.println(Arrays.toString(recorded_networks_so_far[best_network_recorded_index][0]));
         System.out.print("Biases so far: "); //MAKE THIS SAY BEST NETWORK
-        System.out.println(Arrays.toString(full_population_biases));
+        System.out.println(Arrays.toString(recorded_networks_so_far[best_network_recorded_index][1]));
+        }
+        catch (Exception ex)
+        {
+
+        }
       }
 
 
