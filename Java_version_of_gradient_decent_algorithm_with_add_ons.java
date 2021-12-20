@@ -630,6 +630,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   }
 
 
+
   public static double[][][] awe_emotion(double test_output, double awe_expectation_level, double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, double[][][] recorded_networks_so_far)
   {
     double[][][] recorded_networks_so_far_mutatable=recorded_networks_so_far;
@@ -656,7 +657,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         double[][] outputs_of_init_boredom=init(layers, initializing_range);
         full_population_weights_new=outputs_of_init_boredom[0];
         full_population_biases_new=outputs_of_init_boredom[1];
-        recorded_networks_so_far_mutatable_boredom=new double[][][] {{full_population_weights, full_population_biases, {test_output}}};
+        recorded_networks_so_far_mutatable_boredom=new double[][][] {{full_population_weights_new, full_population_biases_new, {test(test_data, layers, activation_functions, full_population_weights_new, full_population_biases_new, empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer)}}};
         just_reinitialized=1;
       }
       else
@@ -765,14 +766,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     String activation_functions="";
     double[] ratios_of_data={0,1};
     double envy_resistence_level=50;
-    double data_group_amount_envy=5;
+    double data_group_amount_envy=50;
     double awe_expectation_level=55;
-    double boredom_acceptance_level=10;
+    double boredom_acceptance_level=7.5;
     double confusion_amount=0.001;
     double confusion_commonness_percent=10;
     double triumph_resistance=5;
     final double learning_rate=0.00001; //make sure this is high enough so that boredom doesn't trigger.
-    final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    final int epoch_amount=10000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
     //getting ready for the main computation
@@ -796,11 +797,14 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[][][] recorded_networks_so_far={};
     double[][][] recorded_networks_so_far_boredom={{full_population_weights, full_population_biases, {test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed)}}};
     double epochs_done_boredom=0;
+    int local_minimums_considered=0;
 
 
-    //If you get an NaN as an output, just make the initializing range smaller.
+    //If you get an NaN as an output, just make the initializing range smaller, or the learning rate
     System.out.println("Starting! ");
     //Main loop that actually trains the network
+    System.out.print("the overall error so far is ");
+    System.out.println(test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
     for (double i=0; i<epoch_amount; i++)
     {
       long start_time_milliseconds=System.currentTimeMillis();
@@ -822,9 +826,9 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
           }
         }
 
-        System.out.print("Weights so far: "); //MAKE this say BEST NETWORK
+        System.out.print("Best weights so far: ");
         System.out.println(Arrays.toString(recorded_networks_so_far[best_network_recorded_index][0]));
-        System.out.print("Biases so far: "); //MAKE THIS SAY BEST NETWORK
+        System.out.print("Best biases so far: ");
         System.out.println(Arrays.toString(recorded_networks_so_far[best_network_recorded_index][1]));
         }
         catch (Exception ex)
@@ -837,7 +841,9 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       System.out.print(i+" epochs have passed    ");
       System.out.print("(");
       System.out.print(System.currentTimeMillis()-start_time_milliseconds);
-      System.out.print("ms) ");
+      System.out.print("ms)  ");
+      System.out.print(local_minimums_considered);
+      System.out.print(" local minimums have been considered     ");
       double rounded_epoch_amount=Math.round(i/10);
       if ((i/10)==rounded_epoch_amount)
       {
@@ -864,10 +870,29 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         if (control_emotions_outputs[2][0][0][0][0]==(double)1)
         {
           epochs_done_boredom=0;
+          local_minimums_considered++;
         }
         full_population_weights=control_emotions_outputs[3][0][0][0];
         full_population_biases=control_emotions_outputs[3][0][0][1];
-        System.out.println("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
+        System.out.print("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed)+ "     ");
+        try
+        {  
+          int best_network_recorded_index=0;
+          double best_network_recorded_error=recorded_networks_so_far[0][2][0];
+          for (int best_network_finding_main=0; best_network_finding_main<recorded_networks_so_far.length; best_network_finding_main++)
+          {
+            if (recorded_networks_so_far[best_network_finding_main][2][0]<best_network_recorded_error)
+            {
+              best_network_recorded_index=best_network_finding_main;
+              best_network_recorded_error=recorded_networks_so_far[best_network_finding_main][2][0];
+            }
+          }
+          System.out.println("the error of the best network is "+ best_network_recorded_error);
+        }
+        catch (Exception ex)
+        {
+          System.out.println("the error of the best network is "+ test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
+        }
       }
       else
       {
