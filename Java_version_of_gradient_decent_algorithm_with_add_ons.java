@@ -11,6 +11,7 @@ import java.lang.String;
 import java.lang.Double;
 import java.io.*;
 
+import java.lang.Thread;
 
 class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
@@ -585,7 +586,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[] new_biases={};
 
     double[][][][] training_data_training_groups={};
-    double data_group_size_avg=Math.round(test_data.length/data_group_amount_envy)-1;
+    double data_group_size_avg=Math.abs(Math.round(test_data.length/data_group_amount_envy)-1);
     int current_data_instance_to_append_index=0;
     double overall_test_error=test_output;
     int current_data_instance_to_append_index_GROUP=0;
@@ -729,9 +730,26 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     return triumph_emotion_outputs;
   }
 
+  public static double holiday_spirit(int comupter_break_time_millisec, int time_per_computer_break_millisec, int time_since_start_program_millisec)
+  {
+    double just_reset_holiday_spirit=0;
+    if (time_since_start_program_millisec>time_per_computer_break_millisec)
+    {
+      try
+      {
+        Thread.sleep((long)comupter_break_time_millisec);
+      }
+      catch(Exception ex)
+      {
+      }
+      just_reset_holiday_spirit=1;
+    }
+    return just_reset_holiday_spirit;
+  }
 
 
-  public static double[][][][][] control_emotions(double test_output,double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, double envy_resistance_level, double data_group_amount_envy, double weights_amount, double biases_amount, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer, double awe_expectation_level, double[][][] recorded_networks_so_far, double[][][] recorded_networks_so_far_boredom, double boredom_acceptance_level, double[] initializing_range, double epochs_done, double confusion_amount, double confusion_commonness_percent, double triumph_resistance)
+
+  public static double[][][][][] control_emotions(double test_output,double[][][] test_data, int[] layers, String activation_functions, double[] full_population_weights, double[] full_population_biases, double[][][] empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, double envy_resistance_level, double data_group_amount_envy, double weights_amount, double biases_amount, double learning_rate, double[] empty_derivative_list_weights, double[] empty_derivative_lists_biases, double[] last_layer_to_cost_effects_empty, double[] weight_surrounding_layer_numbers_empty, double[] nodes_counted_in_each_layer, double awe_expectation_level, double[][][] recorded_networks_so_far, double[][][] recorded_networks_so_far_boredom, double boredom_acceptance_level, double[] initializing_range, double epochs_done, double confusion_amount, double confusion_commonness_percent, double triumph_resistance, int comupter_break_time_millisec, int time_per_computer_break_millisec, int time_since_start_program_millisec)
   {
     double[][] envy_outputs=envy_emotion(test_output, test_data, layers, activation_functions, full_population_weights, full_population_biases, empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer, envy_resistance_level, data_group_amount_envy, weights_amount, biases_amount, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_empty, weight_surrounding_layer_numbers_empty, nodes_counted_in_each_layer); //envy makes sure that (if it is considered right by the person running the algorihm average error wise), it will split up the data so it trains quickly and well, while envy is running.
     full_population_weights=envy_outputs[0];
@@ -746,7 +764,8 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     full_population_biases=confusion_outputs[1];
     double[][][] triumph_emotion_outupts=triumph_emotion(triumph_resistance, awe_emotion_outupts); //TRIUMPH CLEARS AWE, FOR THE MOST PART.
     awe_emotion_outupts=triumph_emotion_outupts; //THIS IS BECAUSE TRIUMPH MODIFIES AWE. DO NOT REMOVE, OR TRIUMPH WILL BE USELESS. TRIUMPH IS USEFUL.
-    double[][][][][] outputs_of_control_emotions={{awe_emotion_outupts}, boredom_emotion_outputs, {{{{just_reinitialized}}}}, {{{full_population_weights, full_population_biases}}}};
+    double holiday_spirit_outputs=holiday_spirit(comupter_break_time_millisec, time_per_computer_break_millisec, time_since_start_program_millisec);
+    double[][][][][] outputs_of_control_emotions={{awe_emotion_outupts}, boredom_emotion_outputs, {{{{just_reinitialized}}}}, {{{full_population_weights, full_population_biases}}}, {{{{holiday_spirit_outputs}}}}};
     return outputs_of_control_emotions;
   }
 
@@ -755,10 +774,10 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   public static void main(String[] args)
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,1};
-    int[] LAYERS_BEING_USED={17,10,10,1};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,5};
+    int[] LAYERS_BEING_USED={17,10,10,5};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    int data_instance_amount=26482;
+    int data_instance_amount=29596; //CHANGE THIS DATASET BECAUSE IT IS TERRIBLE... FILLER FOR NOW.
     //int data_instance_amount=1;
     System.out.println("Retreiving data...");
     String STRING_VERSION_OF_DATA=get_text_data();
@@ -766,14 +785,16 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     String activation_functions="";
     double[] ratios_of_data={0,1};
     double envy_resistence_level=50;
-    double data_group_amount_envy=50;
+    double data_group_amount_envy=10;
     double awe_expectation_level=55;
-    double boredom_acceptance_level=7.5;
-    double confusion_amount=0.001;
+    double boredom_acceptance_level=0.3;
+    double confusion_amount=0.001; 
     double confusion_commonness_percent=10;
     double triumph_resistance=5;
-    final double learning_rate=0.00001; //make sure this is high enough so that boredom doesn't trigger.
-    final int epoch_amount=10000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    int comupter_break_time_millisec=2000;
+    int time_per_computer_break_millisec=900000;
+    final double learning_rate=0.0001; //make sure this is high enough so that boredom doesn't trigger.
+    final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
     //getting ready for the main computation
@@ -798,6 +819,9 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double[][][] recorded_networks_so_far_boredom={{full_population_weights, full_population_biases, {test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed)}}};
     double epochs_done_boredom=0;
     int local_minimums_considered=0;
+    double new_overall_error=0;
+    double test_output=0;
+    long full_program_start_time_milliseconds=System.currentTimeMillis();
 
 
     //If you get an NaN as an output, just make the initializing range smaller, or the learning rate
@@ -812,7 +836,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       full_population_weights=new_weights_and_biases[0];
       full_population_biases=new_weights_and_biases[1];
       if (i/100==Math.round(i/100))
-      {    
+      {
         try
         {  
         int best_network_recorded_index=0;
@@ -848,8 +872,8 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       if ((i/10)==rounded_epoch_amount)
       {
         epochs_done_boredom++;
-        double test_output=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
-        control_emotions_outputs=control_emotions(test_output, training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed, envy_resistence_level, data_group_amount_envy, weights_amount, biases_amount, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer, awe_expectation_level, recorded_networks_so_far, recorded_networks_so_far_boredom, boredom_acceptance_level, INITIALIZING_RANGE, epochs_done_boredom, confusion_amount, confusion_commonness_percent, triumph_resistance);
+        test_output=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
+        control_emotions_outputs=control_emotions(test_output, training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed, envy_resistence_level, data_group_amount_envy, weights_amount, biases_amount, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer, awe_expectation_level, recorded_networks_so_far, recorded_networks_so_far_boredom, boredom_acceptance_level, INITIALIZING_RANGE, epochs_done_boredom, confusion_amount, confusion_commonness_percent, triumph_resistance, comupter_break_time_millisec, time_per_computer_break_millisec, (int)(System.currentTimeMillis()-full_program_start_time_milliseconds));
         try
         {
           recorded_networks_so_far=control_emotions_outputs[0][0];
@@ -874,25 +898,32 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         }
         full_population_weights=control_emotions_outputs[3][0][0][0];
         full_population_biases=control_emotions_outputs[3][0][0][1];
-        System.out.print("the overall error so far is " + test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed)+ "     ");
+        new_overall_error=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
+        System.out.print("the overall error so far is " + new_overall_error + "     ");
         try
-        {  
-          int best_network_recorded_index=0;
-          double best_network_recorded_error=recorded_networks_so_far[0][2][0];
-          for (int best_network_finding_main=0; best_network_finding_main<recorded_networks_so_far.length; best_network_finding_main++)
-          {
-            if (recorded_networks_so_far[best_network_finding_main][2][0]<best_network_recorded_error)
-            {
-              best_network_recorded_index=best_network_finding_main;
-              best_network_recorded_error=recorded_networks_so_far[best_network_finding_main][2][0];
-            }
-          }
-          System.out.println("the error of the best network is "+ best_network_recorded_error);
-        }
-        catch (Exception ex)
         {
-          System.out.println("the error of the best network is "+ test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed));
+        int best_network_recorded_index=0;
+        double best_network_recorded_error=recorded_networks_so_far[0][2][0];
+        for (int best_network_finding_main=0; best_network_finding_main<recorded_networks_so_far.length; best_network_finding_main++)
+        {
+          if (recorded_networks_so_far[best_network_finding_main][2][0]<best_network_recorded_error)
+          {
+            best_network_recorded_index=best_network_finding_main;
+            best_network_recorded_error=recorded_networks_so_far[best_network_finding_main][2][0];
+          }
         }
+        System.out.print("the best network's error so far is " + best_network_recorded_error + "   ");
+      }
+      catch(Exception ex)
+      {
+        System.out.print("the best network's error so far is " + "NOTHING NOTABLE RECORDED YET" + "   ");
+      }
+      if (control_emotions_outputs[4][0][0][0][0]==(double)1)
+      {
+        full_program_start_time_milliseconds=System.currentTimeMillis();
+      }
+
+        System.out.println("the improvement since last time is " + (test_output-new_overall_error));
       }
       else
       {
