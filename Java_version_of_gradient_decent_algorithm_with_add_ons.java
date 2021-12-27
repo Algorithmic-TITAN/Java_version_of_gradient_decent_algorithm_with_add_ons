@@ -777,7 +777,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,5};
     int[] LAYERS_BEING_USED={17,10,10,5};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    int data_instance_amount=29596; //CHANGE THIS DATASET BECAUSE IT IS TERRIBLE... FILLER FOR NOW.
+    int data_instance_amount=29596;
     //int data_instance_amount=1;
     System.out.println("Retreiving data...");
     String STRING_VERSION_OF_DATA=get_text_data();
@@ -793,7 +793,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double triumph_resistance=5;
     int comupter_break_time_millisec=2000;
     int time_per_computer_break_millisec=900000;
-    final double learning_rate=0.0001; //make sure this is high enough so that boredom doesn't trigger.
+    final double learning_rate=0.000001; //make sure this is high enough so that boredom doesn't trigger.
     final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
