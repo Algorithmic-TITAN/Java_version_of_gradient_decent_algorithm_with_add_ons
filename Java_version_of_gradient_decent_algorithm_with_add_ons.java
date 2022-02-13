@@ -1,3 +1,4 @@
+
 /* class name MUST BE THE SAME AS THE FILE NAME */
 /*Java is capital-sensitive*/
 import java.lang.Math; /*imports java's math library*/
@@ -293,7 +294,6 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         else
         {
           effect_of_bias=last_layer_to_cost_effects[i2];
-          last_layer_to_cost_effects[i1]=effect_of_bias;
         }
       }
             
@@ -774,10 +774,10 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
   public static void main(String[] args)
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={17,10,10,5};
-    int[] LAYERS_BEING_USED={17,10,10,5};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={3,2};
+    int[] LAYERS_BEING_USED={3,2};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    int data_instance_amount=29596;
+    int data_instance_amount=2;
     //int data_instance_amount=1;
     System.out.println("Retreiving data...");
     String STRING_VERSION_OF_DATA=get_text_data();
@@ -793,7 +793,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double triumph_resistance=5;
     int comupter_break_time_millisec=2000;
     int time_per_computer_break_millisec=900000;
-    final double learning_rate=0.000001; //make sure this is high enough so that boredom doesn't trigger.
+    final double learning_rate=0.001; //make sure this is high enough so that boredom doesn't trigger.
     final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
 
     System.out.println("Getting ready...");
