@@ -771,30 +771,51 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
 
 
+  public static void put_neural_netowork_values_to_file(int[] LAYERS_BEING_USED, double[] full_population_weights, double[] full_population_biases, String activation_functions)
+  {
+    String final_string=Arrays.toString(LAYERS_BEING_USED).replace("[", "{").replace("]","}")+Arrays.toString(full_population_weights).replace("[", "{").replace("]","}")+Arrays.toString(full_population_biases).replace("[", "{").replace("]","}")+activation_functions;
+
+
+    BufferedWriter file_writer=null;
+    try
+    {
+        file_writer=new BufferedWriter(new FileWriter("C:\\Users\\andre\\Downloads\\New folder\\Neural_network_values_recorder.txt"));
+        file_writer.write(final_string);
+        file_writer.close();
+    }
+    catch(Exception ex)
+    {
+      ex.printStackTrace();
+    }
+  }
+
+
+
   public static void main(String[] args)
   {
     //things you can specify
-    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={3,2};
-    int[] LAYERS_BEING_USED={3,2};
+    int[] LAYERS_BEING_USED_FOR_EFFICIENCY={784,32,32,16,10};
+    int[] LAYERS_BEING_USED={784,32,32,16,10};
     double[] INITIALIZING_RANGE={-0.3,0.3};
-    int data_instance_amount=2;
+    int data_instance_amount=42000;
     //int data_instance_amount=1;
     System.out.println("Retreiving data...");
     String STRING_VERSION_OF_DATA=get_text_data();
     double[][][] data=convert_data(STRING_VERSION_OF_DATA, data_instance_amount, LAYERS_BEING_USED[0], LAYERS_BEING_USED[LAYERS_BEING_USED.length-1], false);
-    String activation_functions="";
-    double[] ratios_of_data={0,1};
-    double envy_resistence_level=50;
-    double data_group_amount_envy=10;
-    double awe_expectation_level=55;
-    double boredom_acceptance_level=0.3;
-    double confusion_amount=0.001; 
-    double confusion_commonness_percent=10;
+    String activation_functions="sigmoid";
+    double[] ratios_of_data={0.1,0.9};
+    double envy_resistence_level=1000000000; //change all of the emotions back to make sense when done with them.
+    double data_group_amount_envy=1;
+    double awe_expectation_level=0;
+    double boredom_acceptance_level=0;
+    double confusion_amount=0.0; 
+    double confusion_commonness_percent=0.00;
     double triumph_resistance=5;
-    int comupter_break_time_millisec=2000;
+    int comupter_break_time_millisec=0;
     int time_per_computer_break_millisec=900000;
-    final double learning_rate=0.001; //make sure this is high enough so that boredom doesn't trigger.
+    final double learning_rate=0.1; //make sure this is high enough so that boredom doesn't trigger.
     final int epoch_amount=1000000000; //1000000000 is the max factor of 10 becaue otherwise it would be a long or another datatype, but this is for all practical uses infinity.
+    double correct_guesses=0; //DELETE THIS WHEN DONE WITH THE CLOUD PROJECT!!!
 
     System.out.println("Getting ready...");
     //getting ready for the main computation
@@ -822,6 +843,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
     double new_overall_error=0;
     double test_output=0;
     long full_program_start_time_milliseconds=System.currentTimeMillis();
+    double DELETE_THIS_BEST_ACCURACY_SO_FAR=0;
 
 
     //If you get an NaN as an output, just make the initializing range smaller, or the learning rate
@@ -835,6 +857,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       double[][] new_weights_and_biases=take_gradient_decent_step(LAYERS_BEING_USED, activation_functions, training_data, weights_amount, biases_amount, full_population_weights, full_population_biases, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
       full_population_weights=new_weights_and_biases[0];
       full_population_biases=new_weights_and_biases[1];
+
       if (i/100==Math.round(i/100))
       {
         try
@@ -860,6 +883,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
 
         }
       }
+      
 
 
       System.out.print(i+" epochs have passed    ");
@@ -868,9 +892,11 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
       System.out.print("ms)  ");
       System.out.print(local_minimums_considered);
       System.out.print(" local minimums have been considered     ");
+
       double rounded_epoch_amount=Math.round(i/10);
       if ((i/10)==rounded_epoch_amount)
       {
+        
         epochs_done_boredom++;
         test_output=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
         control_emotions_outputs=control_emotions(test_output, training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed, envy_resistence_level, data_group_amount_envy, weights_amount, biases_amount, learning_rate, empty_derivative_list_weights, empty_derivative_lists_biases, last_layer_to_cost_effects_EMPTY, weight_surrounding_layer_numbers_EMPTY, nodes_counted_in_each_layer, awe_expectation_level, recorded_networks_so_far, recorded_networks_so_far_boredom, boredom_acceptance_level, INITIALIZING_RANGE, epochs_done_boredom, confusion_amount, confusion_commonness_percent, triumph_resistance, comupter_break_time_millisec, time_per_computer_break_millisec, (int)(System.currentTimeMillis()-full_program_start_time_milliseconds));
@@ -898,7 +924,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         }
         full_population_weights=control_emotions_outputs[3][0][0][0];
         full_population_biases=control_emotions_outputs[3][0][0][1];
-        new_overall_error=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
+        //new_overall_error=test(training_data, LAYERS_BEING_USED, activation_functions, full_population_weights, full_population_biases, initialized_empty_weights_sorted_in_layers_then_second_connection_in_layer_then_first_connection_in_layer_for_speed);
         System.out.print("the overall error so far is " + new_overall_error + "     ");
         try
         {
@@ -923,7 +949,7 @@ class Java_version_of_gradient_decent_algorithm_with_add_ons {
         full_program_start_time_milliseconds=System.currentTimeMillis();
       }
 
-        System.out.println("the improvement since last time is " + (test_output-new_overall_error));
+        put_neural_netowork_values_to_file(LAYERS_BEING_USED, full_population_weights, full_population_biases, activation_functions);
       }
       else
       {
